@@ -75,7 +75,7 @@ export default function CurrentlyBuilding() {
 
               {item.dashed && (
                 <p className="font-mono text-xs text-[#c8c5be] italic">
-                  // further out — name TBD
+                  further out — name TBD
                 </p>
               )}
             </article>
