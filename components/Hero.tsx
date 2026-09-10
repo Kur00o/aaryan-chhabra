@@ -1,7 +1,6 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import Image from "next/image";
 import KiraLoop from "./KiraLoop";
 
 const ease = [0.2, 0.8, 0.2, 1] as const;
@@ -27,16 +26,6 @@ export default function Hero() {
         {/* Left — copy */}
         <div className="flex flex-col gap-6">
           <motion.div className="flex items-center gap-3" {...fadeUp(0.05)}>
-            <div className="relative w-12 h-12 rounded-full overflow-hidden ring-2 ring-border-bright flex-shrink-0">
-              <Image
-                src="/assets/display-picture.png"
-                alt="Aaryan Chhabra"
-                fill
-                sizes="48px"
-                priority
-                className="object-cover object-top scale-125"
-              />
-            </div>
             <span className="font-mono text-sm text-coral tracking-widest uppercase">
               aaryan chhabra
             </span>

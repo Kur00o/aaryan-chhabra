@@ -30,7 +30,10 @@ export const metadata: Metadata = {
   description:
     "Computer Science undergrad at MIT-WPU. Autonomous agents, open-source tools, and the occasional agentic pentester.",
   icons: {
-    icon: "/favicon.png",
+    icon: [
+      { url: "/favicon.png", type: "image/png" },
+      { url: "/icon.png", type: "image/png" },
+    ],
     shortcut: "/favicon.png",
     apple: "/favicon.png",
   },
