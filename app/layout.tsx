@@ -30,8 +30,9 @@ export const metadata: Metadata = {
   description:
     "Computer Science undergrad at MIT-WPU. Autonomous agents, open-source tools, and the occasional agentic pentester.",
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
   },
   openGraph: {
     title: "Aaryan Chhabra — I build what thinks for itself.",
