@@ -29,6 +29,10 @@ export const metadata: Metadata = {
   title: "Aaryan Chhabra — I build what thinks for itself.",
   description:
     "Computer Science undergrad at MIT-WPU. Autonomous agents, open-source tools, and the occasional agentic pentester.",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+  },
   openGraph: {
     title: "Aaryan Chhabra — I build what thinks for itself.",
     description:
