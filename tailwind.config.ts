@@ -5,10 +5,10 @@ const config: Config = {
   content: ["./components/**/*.{js,ts,jsx,tsx,mdx}", "./app/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     colors: {
-      red: "#F42902",
-      snow: "#FDFDFF",
-      lime: "#83FD80",
-      ink: "#140B08",
+      sky: "#0099FF",
+      snow: "#FDFDFE",
+      amber: "#E0F354",
+      ink: "#0B1B2C",
       transparent: "transparent",
       current: "currentColor",
     },

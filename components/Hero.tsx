@@ -6,8 +6,8 @@ function KiraGlyph() {
   return (
     <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false" className="hcard__glyph">
       <rect width="64" height="64" rx="32" fill="var(--ink)" />
-      <path d="M18 24 L28 32 L18 40" stroke="var(--lime)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-      <path d="M32 42 H46" stroke="var(--lime)" strokeWidth="5" strokeLinecap="round" />
+      <path d="M18 24 L28 32 L18 40" stroke="var(--amber)" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <path d="M32 42 H46" stroke="var(--amber)" strokeWidth="5" strokeLinecap="round" />
     </svg>
   );
 }
@@ -38,7 +38,7 @@ export default function Hero() {
         </span>
       </h1>
 
-      <a href="#wins" className="hcard hcard--a" data-depth="0.7" data-rot="8" style={{ ["--rot" as string]: "8deg" }} aria-label="5 podiums since 2024: see the wins">
+      <a href="#wins" className="hcard hcard--a" data-depth="0.7" data-rot="4" style={{ ["--rot" as string]: "4deg" }} aria-label="5 podiums since 2024: see the wins">
         <span className="hcard__in">
           <span className="hcard__avatar">
             <Image src="/assets/display-picture.png" alt="" fill sizes="96px" priority />
@@ -48,7 +48,7 @@ export default function Hero() {
         </span>
       </a>
 
-      <a href="#loop" className="hcard hcard--b" data-depth="1.2" data-rot="-7" style={{ ["--rot" as string]: "-7deg" }} aria-label="Kira, an agent with 14 tools: see how the loop works">
+      <a href="#loop" className="hcard hcard--b" data-depth="1.2" data-rot="-4" style={{ ["--rot" as string]: "-4deg" }} aria-label="Kira, an agent with 14 tools: see how the loop works">
         <span className="hcard__in">
           <KiraGlyph />
           <strong>kira.agent</strong>

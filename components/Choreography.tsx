@@ -16,7 +16,8 @@ declare global {
  * markup. Every hidden starting state is set by JS (or by the .js-motion gate),
  * so the page reads fine if this never runs.
  *
- * Easing family: expo.out for entrances, power3.inOut for wipes/draws.
+ * Easing family: power3.out for entrances, sine.inOut for wipes/draws —
+ * soft starts and long settles so nothing snaps.
  */
 export default function Choreography() {
   useEffect(() => {
@@ -30,11 +31,17 @@ export default function Choreography() {
     let lenis: Lenis | null = null;
     const tick = (t: number) => lenis?.raf(t * 1000);
     if (!reduce) {
-      lenis = new Lenis({ lerp: 0.11 });
+      lenis = new Lenis({
+        duration: 1.15,
+        easing: (x: number) => 1 - Math.pow(1 - x, 4),
+        smoothWheel: true,
+        wheelMultiplier: 0.9,
+        touchMultiplier: 1.4,
+      });
       window.__lenis = lenis;
       lenis.on("scroll", ScrollTrigger.update);
       gsap.ticker.add(tick);
-      gsap.ticker.lagSmoothing(0);
+      gsap.ticker.lagSmoothing(500, 33);
     }
 
     /* ── In-page anchors (through Lenis, focus follows) ────────── */
@@ -46,7 +53,7 @@ export default function Choreography() {
       const el = document.querySelector<HTMLElement>(id);
       if (!el) return;
       e.preventDefault();
-      if (lenis) lenis.scrollTo(el, { duration: 1.5 });
+      if (lenis) lenis.scrollTo(el, { duration: 1.4 });
       else el.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
       history.pushState(null, "", id);
       const heading = el.querySelector<HTMLElement>("h1, h2") ?? el;
@@ -72,7 +79,7 @@ export default function Choreography() {
         gsap.set(c.querySelector(".hcard__in"), { rotation: parseFloat(c.dataset.rot || "0") });
       });
       gsap
-        .timeline({ defaults: { ease: "expo.out", duration: 1.2 } })
+        .timeline({ defaults: { ease: "power3.out", duration: 1.3 } })
         .fromTo(".hero__meta", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.8 }, 0)
         .fromTo(
           ".hero__title .line > span",
@@ -84,30 +91,30 @@ export default function Choreography() {
           },
           0.05
         )
-        .fromTo(".hero__sub", { autoAlpha: 0, y: 14 }, { autoAlpha: 1, y: 0, duration: 0.9 }, 0.5)
+        .fromTo(".hero__sub", { autoAlpha: 0, y: 10 }, { autoAlpha: 1, y: 0, duration: 0.9 }, 0.5)
         .fromTo(
           ".hcard",
-          { autoAlpha: 0, scale: 0.55, y: 60 },
+          { autoAlpha: 0, scale: 0.92, y: 24 },
           { autoAlpha: 1, scale: 1, y: 0, stagger: 0.14, duration: 1.3 },
           0.45
         )
         .fromTo(".hero .sticker", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.5 }, 0.7)
         .fromTo(
           ".hero .sticker svg",
-          { scale: 0.4, rotation: -120 },
+          { scale: 0.85, rotation: -40 },
           { scale: 1, rotation: 0, duration: 1.4, transformOrigin: "50% 50%" },
           0.7
         )
         .fromTo(
           ".hero__circle path",
           { strokeDashoffset: 1 },
-          { strokeDashoffset: 0, duration: 1.1, ease: "power3.inOut" },
+          { strokeDashoffset: 0, duration: 1.3, ease: "sine.inOut" },
           0.8
         )
         .fromTo(
           ".hero__curl path, .hero__swoop path",
           { strokeDashoffset: 1 },
-          { strokeDashoffset: 0, duration: 0.8, ease: "power3.inOut", stagger: 0.18 },
+          { strokeDashoffset: 0, duration: 1, ease: "sine.inOut", stagger: 0.18 },
           1.05
         );
 
@@ -115,9 +122,9 @@ export default function Choreography() {
       q<HTMLElement>(".sticker").forEach((st) => {
         const ring = st.querySelector(".sticker__ring");
         if (!ring) return;
-        const spin = gsap.to(ring, { rotation: 360, svgOrigin: "100 100", repeat: -1, ease: "none", duration: 18 });
-        const fast = () => gsap.to(spin, { timeScale: 4, duration: 0.6, ease: "power3.out" });
-        const slow = () => gsap.to(spin, { timeScale: 1, duration: 1.2, ease: "power3.out" });
+        const spin = gsap.to(ring, { rotation: 360, svgOrigin: "100 100", repeat: -1, ease: "none", duration: 26 });
+        const fast = () => gsap.to(spin, { timeScale: 2, duration: 0.9, ease: "sine.out" });
+        const slow = () => gsap.to(spin, { timeScale: 1, duration: 1.6, ease: "sine.out" });
         st.addEventListener("pointerenter", fast);
         st.addEventListener("pointerleave", slow);
         cleanups.push(() => {
@@ -132,8 +139,8 @@ export default function Choreography() {
           const inner = c.querySelector(".hcard__in")!;
           const rot = parseFloat(c.dataset.rot || "0");
           const d = parseFloat(c.dataset.depth || "1");
-          const enter = () => gsap.to(inner, { rotation: 0, scale: 1.06, duration: 0.6, ease: "expo.out" });
-          const leave = () => gsap.to(inner, { rotation: rot, scale: 1, duration: 0.9, ease: "expo.out" });
+          const enter = () => gsap.to(inner, { rotation: 0, scale: 1.03, duration: 0.8, ease: "power2.out" });
+          const leave = () => gsap.to(inner, { rotation: rot, scale: 1, duration: 1.1, ease: "power2.out" });
           c.addEventListener("pointerenter", enter);
           c.addEventListener("pointerleave", leave);
           cleanups.push(() => {
@@ -142,16 +149,16 @@ export default function Choreography() {
           });
           return {
             d,
-            x: gsap.quickTo(inner, "x", { duration: 1.1, ease: "power3" }),
-            y: gsap.quickTo(inner, "y", { duration: 1.1, ease: "power3" }),
+            x: gsap.quickTo(inner, "x", { duration: 1.4, ease: "power2.out" }),
+            y: gsap.quickTo(inner, "y", { duration: 1.4, ease: "power2.out" }),
           };
         });
         const onMove = (e: PointerEvent) => {
           const nx = e.clientX / window.innerWidth - 0.5;
           const ny = e.clientY / window.innerHeight - 0.5;
           movers.forEach((m) => {
-            m.x(nx * 40 * m.d);
-            m.y(ny * 30 * m.d);
+            m.x(nx * 18 * m.d);
+            m.y(ny * 12 * m.d);
           });
         };
         window.addEventListener("pointermove", onMove, { passive: true });
@@ -160,15 +167,15 @@ export default function Choreography() {
 
       /* Scrolling out of the hero: type sinks, cards rise. */
       gsap.to(".hero__title", {
-        yPercent: 14,
+        yPercent: 8,
         ease: "none",
-        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true },
+        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: 0.8 },
       });
       gsap.to(".hcard", {
-        yPercent: -70,
+        yPercent: -30,
         ease: "none",
         stagger: 0.1,
-        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true },
+        scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: 0.8 },
       });
 
       /* ── 2. Reveals, chosen per content type ─────────────────── */
@@ -178,9 +185,9 @@ export default function Choreography() {
           { yPercent: 115 },
           {
             yPercent: 0,
-            duration: 1.2,
-            ease: "expo.out",
-            stagger: 0.08,
+            duration: 1.1,
+            ease: "power3.out",
+            stagger: 0.07,
             scrollTrigger: { trigger: el, start: "top 88%", once: true },
             onComplete: () => q(".line", el).forEach((l) => l.classList.add("is-done")),
           }
@@ -189,8 +196,8 @@ export default function Choreography() {
       q<HTMLElement>('[data-reveal="fade"]').forEach((el) => {
         gsap.fromTo(
           el,
-          { autoAlpha: 0, y: 14 },
-          { autoAlpha: 1, y: 0, duration: 1, ease: "expo.out", scrollTrigger: { trigger: el, start: "top 90%", once: true } }
+          { autoAlpha: 0, y: 12 },
+          { autoAlpha: 1, y: 0, duration: 1.1, ease: "power2.out", scrollTrigger: { trigger: el, start: "top 90%", once: true } }
         );
       });
       q<HTMLElement>('[data-reveal="wipe"]').forEach((el) => {
@@ -198,8 +205,8 @@ export default function Choreography() {
         tl.fromTo(
           el,
           { clipPath: "inset(0% 100% 0% 0% round 28px)" },
-          { clipPath: "inset(0% 0% 0% 0% round 28px)", duration: 1.3, ease: "power3.inOut", clearProps: "clipPath" }
-        ).fromTo(el.querySelector("svg"), { scale: 1.18 }, { scale: 1, duration: 1.6, ease: "expo.out" }, 0.2);
+          { clipPath: "inset(0% 0% 0% 0% round 28px)", duration: 1.2, ease: "sine.inOut", clearProps: "clipPath" }
+        ).fromTo(el.querySelector("svg"), { scale: 1.06 }, { scale: 1, duration: 1.6, ease: "power2.out" }, 0.15);
       });
       q<HTMLElement>('[data-reveal="rows"]').forEach((el) => {
         gsap.fromTo(
@@ -207,9 +214,9 @@ export default function Choreography() {
           { clipPath: "inset(0% 100% 0% 0%)" },
           {
             clipPath: "inset(0% 0% 0% 0%)",
-            duration: 1.1,
-            ease: "power3.inOut",
-            stagger: 0.1,
+            duration: 1,
+            ease: "sine.inOut",
+            stagger: 0.08,
             clearProps: "clipPath",
             scrollTrigger: { trigger: el, start: "top 85%", once: true },
           }
@@ -221,8 +228,8 @@ export default function Choreography() {
           { strokeDashoffset: 1 },
           {
             strokeDashoffset: 0,
-            duration: 1,
-            ease: "power3.inOut",
+            duration: 1.2,
+            ease: "sine.inOut",
             stagger: 0.2,
             scrollTrigger: { trigger: svg, start: "top 85%", once: true },
           }
@@ -257,9 +264,10 @@ export default function Choreography() {
           scrollTrigger: {
             trigger: loop,
             start: "top top",
-            end: "+=260%",
+            end: "+=160%",
             pin: true,
-            scrub: 0.6,
+            scrub: 1,
+            anticipatePin: 1,
             onUpdate: (self) => {
               const p = self.progress;
               termLines.forEach((l, i) => l.classList.toggle("is-on", p >= thresholds[i]));
@@ -293,7 +301,8 @@ export default function Choreography() {
             start: "top top",
             end: () => "+=" + dist(),
             pin: true,
-            scrub: 0.8,
+            scrub: 1,
+            anticipatePin: 1,
             invalidateOnRefresh: true,
           },
         });
@@ -316,7 +325,7 @@ export default function Choreography() {
               gsap.fromTo(
                 s.querySelectorAll(".stage__log .tline"),
                 { autoAlpha: 0, x: -10 },
-                { autoAlpha: 1, x: 0, stagger: 0.14, duration: 0.7, ease: "expo.out", delay: 0.35 }
+                { autoAlpha: 1, x: 0, stagger: 0.12, duration: 0.8, ease: "power2.out", delay: 0.25 }
               );
             },
           })
