@@ -21,7 +21,7 @@ export default function Clients() {
         <div className="work__viewport">
           <ol className="work__track">
             {CLIENTS.map((c, i) => (
-              <li key={c.name} className="ccard" style={{ ["--tilt" as string]: i % 2 ? "1.5deg" : "-1.5deg" }}>
+              <li key={c.name} className="ccard" style={{ ["--tilt" as string]: i % 2 ? "0.8deg" : "-0.8deg" }}>
                 <a href={c.url} target="_blank" rel="noopener noreferrer" className="ccard__shot">
                   <Image
                     src={c.image}
