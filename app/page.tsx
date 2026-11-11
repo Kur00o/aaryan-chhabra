@@ -1,35 +1,23 @@
 import Hero from "@/components/Hero";
-import FeaturedBuilds from "@/components/FeaturedBuilds";
-import ClientWork from "@/components/ClientWork";
-import CurrentlyBuilding from "@/components/CurrentlyBuilding";
-import Experience from "@/components/Experience";
-import Achievements from "@/components/Achievements";
+import Marquee from "@/components/Marquee";
+import Loop from "@/components/Loop";
+import Builds from "@/components/Builds";
+import Clients from "@/components/Clients";
+import Now from "@/components/Now";
+import Wins from "@/components/Wins";
 import Skills from "@/components/Skills";
 import Footer from "@/components/Footer";
-
-function Divider() {
-  return (
-    <div className="max-w-7xl mx-auto px-6">
-      <div className="border-t border-border" />
-    </div>
-  );
-}
 
 export default function Home() {
   return (
     <>
       <Hero />
-      <Divider />
-      <Experience />
-      <Divider />
-      <FeaturedBuilds />
-      <Divider />
-      <ClientWork />
-      <Divider />
-      <CurrentlyBuilding />
-      <Divider />
-      <Achievements />
-      <Divider />
+      <Marquee />
+      <Loop />
+      <Builds />
+      <Clients />
+      <Now />
+      <Wins />
       <Skills />
       <Footer />
     </>

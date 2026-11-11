@@ -1,34 +1,34 @@
-import type { Metadata } from "next";
-import { Space_Grotesk, Work_Sans, JetBrains_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 import "./globals.css";
 import Nav from "@/components/Nav";
-import CursorDot from "@/components/CursorDot";
+import Choreography from "@/components/Choreography";
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["700"],
-  variable: "--font-space-grotesk",
+/* Self-hosted (OFL) so builds never depend on a network fetch.
+   One family does the shouting and the talking: Archivo, pushed to 125% width for display. */
+const archivo = localFont({
+  src: [{ path: "./fonts/Archivo-Variable.woff2", weight: "100 900", style: "normal" }],
+  variable: "--font-archivo",
   display: "swap",
+  declarations: [{ prop: "font-stretch", value: "62% 125%" }],
+  fallback: ["Helvetica Neue", "system-ui", "sans-serif"],
 });
 
-const workSans = Work_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-work-sans",
+/* Mono only where it's literally a terminal. */
+const mono = localFont({
+  src: [{ path: "./fonts/JetBrainsMono-Variable.woff2", weight: "100 800", style: "normal" }],
+  variable: "--font-jbm",
   display: "swap",
+  fallback: ["ui-monospace", "Menlo", "monospace"],
 });
 
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-jetbrains-mono",
-  display: "swap",
-});
+const title = "Aaryan Chhabra — I build what thinks for itself.";
+const description =
+  "Computer Science undergrad at MIT-WPU, Pune. Autonomous agents, open-source tools, and the occasional agentic pentester.";
 
 export const metadata: Metadata = {
-  title: "Aaryan Chhabra — I build what thinks for itself.",
-  description:
-    "Computer Science undergrad at MIT-WPU. Autonomous agents, open-source tools, and the occasional agentic pentester.",
+  title,
+  description,
   icons: {
     icon: [
       { url: "/favicon.png", type: "image/png" },
@@ -37,28 +37,33 @@ export const metadata: Metadata = {
     shortcut: "/favicon.png",
     apple: "/favicon.png",
   },
-  openGraph: {
-    title: "Aaryan Chhabra — I build what thinks for itself.",
-    description:
-      "Computer Science undergrad at MIT-WPU. Autonomous agents, open-source tools, and the occasional agentic pentester.",
-    type: "website",
-  },
+  openGraph: { title, description, type: "website" },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export const viewport: Viewport = {
+  themeColor: "#F42902",
+  viewportFit: "cover",
+};
+
+/* Runs before paint: hides hero pieces only when motion will actually play,
+   and un-hides them after 2.5s if the motion script never arrives. */
+const motionGate = `(function(){try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;var d=document.documentElement;d.classList.add('js-motion');setTimeout(function(){if(!d.classList.contains('motion-ready'))d.classList.remove('js-motion')},2500)}catch(e){}})();`;
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${spaceGrotesk.variable} ${workSans.variable} ${jetbrainsMono.variable}`}
-    >
-      <body className="bg-bg antialiased" style={{ color: "#e8e6e0", backgroundColor: "#0a0a0a" }}>
-        <CursorDot />
+    <html lang="en" className={`${archivo.variable} ${mono.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: motionGate }} />
+      </head>
+      <body>
+        <a href="#main" className="skip">
+          Skip to content
+        </a>
         <Nav />
-        <main>{children}</main>
+        <main id="main" tabIndex={-1}>
+          {children}
+        </main>
+        <Choreography />
       </body>
     </html>
   );
